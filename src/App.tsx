@@ -108,8 +108,10 @@ const App: React.FC = () => {
             <br />
           </>
         )}
-        {gameOver ? <Form formDataHandler={formDataHandler} /> : null}
-        {gameOver ? (
+        {!showAlert && gameOver ? (
+          <Form formDataHandler={formDataHandler} />
+        ) : null}
+        {showAlert && gameOver ? (
           <button className="start" onClick={startTrivia}>
             {" "}
             start Quiz
