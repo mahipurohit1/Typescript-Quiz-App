@@ -9,6 +9,7 @@ import { GlobalStyle, Wrapper } from "./App.styles";
 import Form from "./components/Form";
 import { Alert } from "@mui/material";
 import AlertTitle from "@mui/material/AlertTitle";
+import Score from "./components/Score";
 
 export type AnswerObject = {
   question: string;
@@ -28,6 +29,18 @@ const App: React.FC = () => {
   const [noOfQuestion, setNoOfQuestions] = useState(5);
   const [category, setCategory] = useState(9);
   const [difficulty, setDifficulty] = useState("medium");
+  const [showResult, setShowResult] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+    setGameOver(true);
+    setNoOfQuestions(5);
+    setCategory(9);
+    setScore(0);
+    setShowResult(false);
+    setDifficulty("medium");
+  };
 
   const formDataHandler = (
     noOfQuestion: number,
@@ -86,10 +99,13 @@ const App: React.FC = () => {
     }
   };
   const startAgainHandler = () => {
-    setGameOver(true);
-    setNoOfQuestions(5);
-    setCategory(9);
-    setDifficulty("medium");
+    // setGameOver(true);
+    setOpen(true);
+    setShowResult(true);
+    // setNoOfQuestions(5);
+    // setCategory(9);
+    // setScore(0);
+    // setDifficulty("medium");
   };
   console.log(questions);
 
@@ -117,7 +133,7 @@ const App: React.FC = () => {
             start Quiz
           </button>
         ) : null}
-        {!gameOver ? <p className="score">Score: {score}</p> : null}
+        {/* {!gameOver ? <p className="score">Score: {score}</p> : null} */}
         {loading ? <p>Loading Questions...</p> : null}
         {!loading && !gameOver && (
           <QuestionCard
@@ -138,10 +154,23 @@ const App: React.FC = () => {
           </button>
         ) : null}
 
-        {!gameOver && !loading && userAnswers.length === noOfQuestion && (
+        {/* {!gameOver && !loading && userAnswers.length === noOfQuestion && (
           <button onClick={startAgainHandler} className={"start"}>
             start again
           </button>
+        )} */}
+        {!gameOver && !loading && userAnswers.length === noOfQuestion && (
+          <button onClick={startAgainHandler} className={"start"}>
+            show result
+          </button>
+        )}
+        {showResult && (
+          <Score
+            open={open}
+            handleClose={handleClose}
+            score={score}
+            total={noOfQuestion}
+          />
         )}
       </Wrapper>
     </>
