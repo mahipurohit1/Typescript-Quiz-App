@@ -7,6 +7,8 @@ import { QuestionsState } from "./API";
 // Styles
 import { GlobalStyle, Wrapper } from "./App.styles";
 import Form from "./components/Form";
+import { Alert } from "@mui/material";
+import AlertTitle from "@mui/material/AlertTitle";
 
 export type AnswerObject = {
   question: string;
@@ -22,7 +24,7 @@ const App: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
-
+  const [showAlert, setShowAlert] = useState(false);
   const [noOfQuestion, setNoOfQuestions] = useState(5);
   const [category, setCategory] = useState(9);
   const [difficulty, setDifficulty] = useState("medium");
@@ -35,8 +37,7 @@ const App: React.FC = () => {
     setNoOfQuestions(noOfQuestion);
     setDifficulty(difficulty);
     setCategory(category);
-
-    setGameOver(false);
+    setShowAlert(true);
   };
 
   const startTrivia = async () => {
@@ -52,6 +53,7 @@ const App: React.FC = () => {
     setUserAnswers([]);
     setNumber(0);
     setLoading(false);
+    setShowAlert(false);
   };
 
   const checkAnswer = (e: any) => {
@@ -85,18 +87,33 @@ const App: React.FC = () => {
   };
   const startAgainHandler = () => {
     setGameOver(true);
+    setNoOfQuestions(5);
+    setCategory(9);
+    setDifficulty("medium");
   };
+  console.log(questions);
 
   return (
     <>
       <GlobalStyle />
       <Wrapper>
         <h1>TYPESCRIPT QUIZ</h1>
-        {/* {gameOver || userAnswers.length === noOfQuestion ? (
-          <Form formDataHandler={formDataHandler} onstartTrivia={startTrivia} /> : null
-        )} */}
+        {showAlert && (
+          <>
+            <Alert severity="success">
+              <AlertTitle>Success</AlertTitle>
+              your filter set Successful— <strong>Start Quiz Now!</strong>
+            </Alert>
+            <br />
+            <br />
+          </>
+        )}
+        {gameOver ? <Form formDataHandler={formDataHandler} /> : null}
         {gameOver ? (
-          <Form formDataHandler={formDataHandler} onstartTrivia={startTrivia} />
+          <button className="start" onClick={startTrivia}>
+            {" "}
+            start Quiz
+          </button>
         ) : null}
         {!gameOver ? <p className="score">Score: {score}</p> : null}
         {loading ? <p>Loading Questions...</p> : null}

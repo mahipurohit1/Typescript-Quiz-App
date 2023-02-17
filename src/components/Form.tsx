@@ -7,7 +7,6 @@ interface propsData {
     category: number,
     difficulty: string
   ) => void;
-  onstartTrivia: () => void;
 }
 
 const Form: React.FC<propsData> = (props) => {
@@ -21,7 +20,6 @@ const Form: React.FC<propsData> = (props) => {
     const category = +categoryRef.current!.value;
     const difficulty = difficultyRef.current!.value;
     props.formDataHandler(number, category, difficulty);
-    props.onstartTrivia();
   };
 
   return (
@@ -59,7 +57,7 @@ const Form: React.FC<propsData> = (props) => {
         </select>
       </div>
       <div>
-        <button>Save</button>
+        <button>Save Filter</button>
       </div>
     </form>
   );
