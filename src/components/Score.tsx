@@ -15,11 +15,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-// setGameOver(true);
-// setNoOfQuestions(5);
-// setCategory(9);
-// setScore(0);
-// setDifficulty("medium");
+
 interface data {
   open: boolean;
   handleClose: () => void;

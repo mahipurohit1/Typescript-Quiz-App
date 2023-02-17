@@ -107,7 +107,6 @@ const App: React.FC = () => {
     // setScore(0);
     // setDifficulty("medium");
   };
-  console.log(questions);
 
   return (
     <>
