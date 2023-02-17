@@ -3,9 +3,10 @@ import { fetchQuizQuestions } from "./API";
 // Components
 import QuestionCard from "./components/QuestionCard";
 // types
-import { QuestionsState, Difficulty } from "./API";
+import { QuestionsState } from "./API";
 // Styles
 import { GlobalStyle, Wrapper } from "./App.styles";
+import Form from "./components/Form";
 
 export type AnswerObject = {
   question: string;
@@ -14,8 +15,6 @@ export type AnswerObject = {
   correctAnswer: string;
 };
 
-const TOTAL_QUESTIONS = 10;
-
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState<QuestionsState[]>([]);
@@ -23,14 +22,30 @@ const App: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
-  const [gameStart, setGameStart] = useState(false);
+
+  const [noOfQuestion, setNoOfQuestions] = useState(5);
+  const [category, setCategory] = useState(9);
+  const [difficulty, setDifficulty] = useState("medium");
+
+  const formDataHandler = (
+    noOfQuestion: number,
+    category: number,
+    difficulty: string
+  ) => {
+    setNoOfQuestions(noOfQuestion);
+    setDifficulty(difficulty);
+    setCategory(category);
+
+    setGameOver(false);
+  };
 
   const startTrivia = async () => {
     setLoading(true);
     setGameOver(false);
     const newQuestions = await fetchQuizQuestions(
-      TOTAL_QUESTIONS,
-      Difficulty.EASY
+      noOfQuestion,
+      difficulty,
+      category
     );
     setQuestions(newQuestions);
     setScore(0);
@@ -62,11 +77,14 @@ const App: React.FC = () => {
     // Move on to the next question if not the last question
     const nextQ = number + 1;
 
-    if (nextQ === TOTAL_QUESTIONS) {
-      setGameOver(true);
+    if (nextQ === noOfQuestion) {
+      // setGameOver(true);
     } else {
       setNumber(nextQ);
     }
+  };
+  const startAgainHandler = () => {
+    setGameOver(true);
   };
 
   return (
@@ -74,17 +92,18 @@ const App: React.FC = () => {
       <GlobalStyle />
       <Wrapper>
         <h1>TYPESCRIPT QUIZ</h1>
-        {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
-          <button className="start" onClick={startTrivia}>
-            Start
-          </button>
+        {/* {gameOver || userAnswers.length === noOfQuestion ? (
+          <Form formDataHandler={formDataHandler} onstartTrivia={startTrivia} /> : null
+        )} */}
+        {gameOver ? (
+          <Form formDataHandler={formDataHandler} onstartTrivia={startTrivia} />
         ) : null}
         {!gameOver ? <p className="score">Score: {score}</p> : null}
         {loading ? <p>Loading Questions...</p> : null}
         {!loading && !gameOver && (
           <QuestionCard
             questionNr={number + 1}
-            totalQuestions={TOTAL_QUESTIONS}
+            totalQuestions={noOfQuestion}
             question={questions[number].question}
             answers={questions[number].answers}
             userAnswer={userAnswers ? userAnswers[number] : undefined}
@@ -94,11 +113,17 @@ const App: React.FC = () => {
         {!gameOver &&
         !loading &&
         userAnswers.length === number + 1 &&
-        number !== TOTAL_QUESTIONS - 1 ? (
+        number !== noOfQuestion - 1 ? (
           <button className="next" onClick={nextQuestion}>
             Next Question
           </button>
         ) : null}
+
+        {!gameOver && !loading && userAnswers.length === noOfQuestion && (
+          <button onClick={startAgainHandler} className={"start"}>
+            start again
+          </button>
+        )}
       </Wrapper>
     </>
   );
